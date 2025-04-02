@@ -5,6 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
+
 from config import API_TOKEN
 from authors import register_authors_handlers, send_team_menu
 from feedback import register_feedback_handlers
