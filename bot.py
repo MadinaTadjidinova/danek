@@ -1,7 +1,9 @@
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
+# from aiogram.client.default import DefaultBotProperties
+from aiogram import Bot
+
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
@@ -13,7 +15,9 @@ from premium import register_premium_handlers
 
 logging.basicConfig(level=logging.INFO)
 
-bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+# bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+bot = Bot(token=API_TOKEN, parse_mode="HTML")
+
 dp = Dispatcher(storage=MemoryStorage())
 
 register_authors_handlers(dp, bot)
