@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from config import ADMIN_USER_ID
 
+# ChatType
 bot = None  # будет подставлен из bot.py
 
 class PaymentForm(StatesGroup):
@@ -79,6 +80,7 @@ async def handle_admin_decision(callback: CallbackQuery):
 def register_premium_handlers(dp, bot_instance):
     global bot
     bot = bot_instance
+    # dp.message.register(start_payment, F.text == "/pay", F.chat.type == ChatType.PRIVATE)
     dp.message.register(start_payment, F.text == "/pay")
     dp.message.register(receive_receipt, PaymentForm.waiting_for_receipt)
     dp.callback_query.register(handle_admin_decision, F.data.startswith("approve:") | F.data.startswith("reject:"))
