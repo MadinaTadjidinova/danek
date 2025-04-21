@@ -3,6 +3,7 @@ from aiogram import F
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
+from aiogram.exceptions import TelegramBadRequest
 from config import ADMIN_USER_ID, ADMIN_USER_ID_MAIN
 
 bot = None  # будет подставлен из bot.py
@@ -67,11 +68,16 @@ async def handle_admin_decision(callback: CallbackQuery):
 
     try:
         await bot.send_message(chat_id=user_id, text=user_text)
-        await bot.edit_message_text(
-            chat_id=ADMIN_USER_ID,
-            message_id=bot._admin_msg,
-            text=f"Статус: {admin_text}"
-        )
+        try:
+            await bot.edit_message_text(
+                chat_id=ADMIN_USER_ID,
+                message_id=bot._admin_msg,
+                text=f"Статус: {admin_text}"
+            )
+        except TelegramBadRequest as e:
+            if "message is not modified" not in str(e):
+                raise
+                
     except Exception as e:
         logging.error(f"Ошибка при отправке пользователю или обновлении статуса: {e}")
         await callback.answer("❌ Что-то пошло не так.")
