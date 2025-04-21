@@ -2,6 +2,7 @@ import asyncio
 from aiogram import F
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from config import CHAT_ID, THREAD_ID
+from aiogram.exceptions import TelegramBadRequest
 
 bot = None  # будет подставлен из bot.py
 
@@ -37,15 +38,23 @@ async def callback_handler(callback: CallbackQuery):
             "📬 Пиши нам: @FocusNTiming"
         )
 
-    await bot.edit_message_text(
-        chat_id=callback.message.chat.id,
-        message_id=callback.message.message_id,
-        text=text,
-        reply_markup=callback.message.reply_markup
-    )
+    try:
+        await bot.edit_message_text(
+            chat_id=callback.message.chat.id,
+            message_id=callback.message.message_id,
+            text=text,
+            reply_markup=callback.message.reply_markup
+        )
+    except TelegramBadRequest as e:
+        if "message is not modified" not in str(e):
+            raise
+
     await callback.answer()
 
 def register_authors_handlers(dp, bot_instance):
     global bot
     bot = bot_instance
     dp.callback_query.register(callback_handler, F.data.in_({"team", "partners"}))
+
+
+
